@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from schemas.ticket import TicketPayload
+from schemas.ticket import TicketRequestModel as TicketPayload
 from app.services.groq import gen_groq_json
 from services.quality import quality_check
 
