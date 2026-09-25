@@ -1,0 +1,165 @@
+{
+  "pydantic_validation_tests": [
+    {
+      "test_name": "pydantic_valid_standard_growth",
+      "expected_result": "PASS",
+      "payload": {
+        "ticket_id": "TCK-10492",
+        "merchant_id": "mer_live_99812",
+        "merchant_tier": "Growth",
+        "contact_email": "support@fintechcorp.io",
+        "timestamp": "2026-09-25T14:30:00Z",
+        "issue_description": "Encountering intermittent 500 errors on /v1/charges when processing card orders."
+      }
+    },
+    {
+      "test_name": "pydantic_valid_boundary_limits",
+      "expected_result": "PASS",
+      "payload": {
+        "ticket_id": "TCK-1000",
+        "merchant_id": "mer_starter_core",
+        "merchant_tier": "Starter",
+        "contact_email": "admin@example.org",
+        "timestamp": "2026-09-25T10:15:30+00:00",
+        "issue_description": "API is failing."
+      }
+    },
+    {
+      "test_name": "pydantic_fail_invalid_ticket_and_merchant_regex",
+      "expected_result": "FAIL",
+      "target_field": ["ticket_id", "merchant_id"],
+      "expected_error": "Pattern regex mismatch on ticket_id (less than 4 digits) and merchant_id (missing mer_ prefix and contains hyphen)",
+      "payload": {
+        "ticket_id": "TCK-12",
+        "merchant_id": "merchant-live-99812",
+        "merchant_tier": "Enterprise",
+        "contact_email": "dev@merchant.com",
+        "timestamp": "2026-09-25T12:00:00Z",
+        "issue_description": "Valid issue description that passes the minimum character limit."
+      }
+    },
+    {
+      "test_name": "pydantic_fail_invalid_enum_and_email",
+      "expected_result": "FAIL",
+      "target_field": ["merchant_tier", "contact_email"],
+      "expected_error": "Invalid enum value for merchant_tier and malformed RFC-5322 email string",
+      "payload": {
+        "ticket_id": "TCK-55201",
+        "merchant_id": "mer_tier_test",
+        "merchant_tier": "CustomVIP",
+        "contact_email": "support_team@invalid-domain",
+        "timestamp": "2026-09-25T12:00:00Z",
+        "issue_description": "Valid issue description reporting recurring 502 Bad Gateway responses."
+      }
+    },
+    {
+      "test_name": "pydantic_fail_invalid_timestamp_and_min_length",
+      "expected_result": "FAIL",
+      "target_field": ["timestamp", "issue_description"],
+      "expected_error": "Non-datetime timestamp string and issue_description length under 15 characters",
+      "payload": {
+        "ticket_id": "TCK-771234",
+        "merchant_id": "mer_retail_12",
+        "merchant_tier": "Starter",
+        "contact_email": "contact@shop.com",
+        "timestamp": "Yesterday at 4pm",
+        "issue_description": "API is down"
+      }
+    }
+  ],
+  "data_quality_scoring_tests": [
+    {
+      "test_name": "quality_scenario_1_golden_enterprise",
+      "expected_score": 100,
+      "triggered_flags": [],
+      "detected_breadcrumbs": ["/v1/charges", "504", "ch_3N2eZ8LkdIwHuX"],
+      "payload": {
+        "ticket_id": "TCK-552019",
+        "merchant_id": "mer_enterprise_1102",
+        "merchant_tier": "Enterprise",
+        "contact_email": "integrations@neobank-core.com",
+        "timestamp": "2026-09-25T15:10:00Z",
+        "issue_description": "Our batch reconciliation job failed while querying /v1/charges. Several requests returned a 504 Gateway Timeout when querying transaction ch_3N2eZ8LkdIwHuX. Out of 45 attempts, 12 stalled after 30 seconds."
+      }
+    },
+    {
+      "test_name": "quality_scenario_2_golden_starter",
+      "expected_score": 100,
+      "triggered_flags": [],
+      "detected_breadcrumbs": ["inv_2026_0981", "402"],
+      "payload": {
+        "ticket_id": "TCK-1402",
+        "merchant_id": "mer_live_7721",
+        "merchant_tier": "Starter",
+        "contact_email": "founder@indieapp.dev",
+        "timestamp": "2026-09-25T09:04:18Z",
+        "issue_description": "Customer purchase failed on inv_2026_0981 with a 402 status code after card entry."
+      }
+    },
+    {
+      "test_name": "quality_scenario_3_hygiene_and_repetition_failure",
+      "expected_score": 70,
+      "expected_deductions": {
+        "CONTAINS_HTML_OR_MARKUP": -15,
+        "EXCESSIVE_WHITESPACE": -5,
+        "REPETITIVE_CHARACTERS": -10
+      },
+      "triggered_flags": [
+        "CONTAINS_HTML_OR_MARKUP",
+        "EXCESSIVE_WHITESPACE",
+        "REPETITIVE_CHARACTERS"
+      ],
+      "detected_breadcrumbs": ["500", "/v1/charges"],
+      "payload": {
+        "ticket_id": "TCK-10928",
+        "merchant_id": "mer_growth_4412",
+        "merchant_tier": "Growth",
+        "contact_email": "dev-alerts@checkoutflow.io",
+        "timestamp": "2026-09-25T13:40:12Z",
+        "issue_description": "   <div>Critical failure during checkout!</div> <script>alert('xss')</script>   The system returned a 500 error code on /v1/charges and now customers are spaaaaamming our support line!!!!!   "
+      }
+    },
+    {
+      "test_name": "quality_scenario_4_enterprise_sla_breach",
+      "expected_score": 90,
+      "expected_deductions": {
+        "ENTERPRISE_DETAIL_BELOW_SLA": -10
+      },
+      "triggered_flags": [
+        "ENTERPRISE_DETAIL_BELOW_SLA"
+      ],
+      "detected_breadcrumbs": ["502"],
+      "payload": {
+        "ticket_id": "TCK-77123",
+        "merchant_id": "mer_ent_90812",
+        "merchant_tier": "Enterprise",
+        "contact_email": "lead-architect@globalfin.org",
+        "timestamp": "2026-09-25T14:05:30Z",
+        "issue_description": "We encountered an unexpected 502 Bad Gateway during our morning settlement run."
+      }
+    },
+    {
+      "test_name": "quality_scenario_5_noise_and_missing_breadcrumbs",
+      "expected_score": 45,
+      "expected_deductions": {
+        "EXCESSIVE_CAPITALIZATION": -15,
+        "REPETITIVE_CHARACTERS": -10,
+        "MISSING_TECHNICAL_IDENTIFIERS": -30
+      },
+      "triggered_flags": [
+        "EXCESSIVE_CAPITALIZATION",
+        "REPETITIVE_CHARACTERS",
+        "MISSING_TECHNICAL_IDENTIFIERS"
+      ],
+      "detected_breadcrumbs": [],
+      "payload": {
+        "ticket_id": "TCK-481023",
+        "merchant_id": "mer_retail_88219",
+        "merchant_tier": "Growth",
+        "contact_email": "billing@quickpay.shop",
+        "timestamp": "2026-09-25T11:22:04Z",
+        "issue_description": "YOUR ENTIRE PAYMENT GATEWAY IS TOTALLY BROKEN RIGHT NOW PLEASE HEEEEEELP IMMEDIATELY EVERYTHING FAILS"
+      }
+    }
+  ]
+}
