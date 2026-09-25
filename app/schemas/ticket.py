@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
-from pydantic import BaseModel, EmailStr, Field, ValidationError
+from pydantic import BaseModel, EmailStr, Field
 
 
 class MerchantTier(str, Enum):
@@ -19,3 +19,41 @@ class TicketRequestModel(BaseModel):
     contact_email: EmailStr
     timestamp: datetime
     issue_description: str = Field(min_length=15, max_length=2000)
+
+class QualityStatus(str, Enum):
+    EXCELLENT = 'EXCELLENT'
+    ACCEPTABLE = 'ACCEPTABLE'
+    REJECTED = 'REJECTED'
+
+class SLA_Urgency(str, Enum):
+    CRITICAL = 'P1 (Critical Outage)'
+    HIGH = 'P2 (High)'
+    STANDARD = 'P3 (Standard)'
+
+class Category(str, Enum):
+    TRANSACTION_FAILURE = 'Transaction Failure'
+    API_WEBHOOKS = 'API / Webhooks'
+    SETTLEMENT_PAYOUTS = 'Settlement & Payouts'
+    ACCOUNT_ACCESS = 'Account Access'
+    GENERAL_INQUIRY = 'General Inquiry'
+
+
+class QualityReport(BaseModel):
+     # TODO: score (int), status (str), flags (a list of strings)
+    score: int
+    status: QualityStatus
+    flags: list[str]
+
+class AIDispatch(BaseModel):
+    category: Category
+    sla_urgency: SLA_Urgency
+    auto_route_to: str
+    reasoning: str
+
+class TriageResponse(BaseModel):
+    ticket_id: str
+    merchant_id: str
+    merchant_tier: MerchantTier
+    processing_timestamp: datetime
+    data_quality: QualityReport
+    ai_dispatch: AIDispatch
