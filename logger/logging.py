@@ -6,7 +6,7 @@ logger.setLevel(logging.DEBUG)
 
 # 2. Create Handlers
 console_handler = logging.StreamHandler()
-file_handler = logging.FileHandler("logging.logs") 
+file_handler = logging.FileHandler("logger.logs") 
 
 console_handler.setLevel(logging.INFO)  
 file_handler.setLevel(logging.ERROR)  
