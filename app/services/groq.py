@@ -8,6 +8,7 @@ from groq import (
     APIConnectionError,
     APIError,
 )
+from app.schemas.ticket import AIDispatch, LLMInput
 from logger.logging import logger
 from dotenv import load_dotenv
 import asyncio
@@ -20,7 +21,7 @@ client = AsyncGroq(
     timeout=30.0,
 ) 
 
-async def gen_groq_json(payload):
+async def gen_groq_json(payload: LLMInput) -> AIDispatch:
     try:
         system_prompt = """
         The user will provide a payload that represents a support ticket. The payload has been validated and issued a quality check score.
@@ -88,11 +89,3 @@ async def gen_groq_json(payload):
 
     return json.loads(response.choices[0].message.content)
 
-    # print(json.loads(response.choices[0].message.content))
-
-# payload =  {
-#             "merchant_tier": "Enterprise",
-#             "issue_description": "Enterprise merchant experiencing 504 gateway timeouts on live webhook endpoints during active transaction processing.",
-#         }
-
-# asyncio.run(gen_groq_json(payload))

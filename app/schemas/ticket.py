@@ -43,6 +43,7 @@ class QualityReport(BaseModel):
     score: int
     status: QualityStatus
     flags: list[str]
+    cleaned_text: str
 
 class AIDispatch(BaseModel):
     category: Category
@@ -50,10 +51,14 @@ class AIDispatch(BaseModel):
     auto_route_to: str
     reasoning: str
 
+class LLMInput(BaseModel):
+    merchant_tier: MerchantTier
+    issue_description: str
+
 class TriageResponse(BaseModel):
     ticket_id: str
     merchant_id: str
     merchant_tier: MerchantTier
-    processing_timestamp: datetime
+    timestamp: datetime
     data_quality: QualityReport
     ai_dispatch: AIDispatch

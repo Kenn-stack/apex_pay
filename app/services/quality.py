@@ -1,4 +1,5 @@
 import re
+from app.schemas.ticket import QualityReport
 
 
 def check_html_and_markup(text: str) -> tuple[bool, str]:
@@ -93,7 +94,7 @@ def check_completeness(text: str, merchant_tier: str) -> list[str]:
 
 def calculate_quality_score(
     issue_description: str, merchant_tier: str
-) -> dict:
+) -> QualityReport:
     """Orchestrates all quality dimensions starting from 100 and applies deductions.
 
     Returns a dict with QualityReport fields plus the sanitized text:

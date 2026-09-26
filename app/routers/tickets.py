@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from app.schemas.ticket import TicketRequestModel as TicketPayload
+from app.schemas.ticket import TicketRequestModel as TicketPayload, TriageResponse
 from app.services.groq import gen_groq_json
 from app.services.quality import calculate_quality_score
 
@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.post("/v1/merchant/tickets/triage")
-async def triage_ticket(ticket_payload: TicketPayload):
+async def triage_ticket(ticket_payload: TicketPayload) -> TriageResponse:
     ticket_dict = ticket_payload.model_dump()
 
     # Perform quality check on the payload
