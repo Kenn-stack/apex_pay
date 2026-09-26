@@ -7,7 +7,21 @@ from app.services.quality import calculate_quality_score
 router = APIRouter()  # Create the router instance
 
 
-@router.post("/v1/merchant/tickets/triage")
+@router.post(
+    "/v1/merchant/tickets/triage",
+    summary="Triage an incoming merchant support ticket",
+    description=(
+        "Validates, scores, and routes an inbound ticket through three sequential gates: "
+        "structural validation (Pydantic), data quality profiling (0-100 score), and "
+        "AI-powered categorization. Tickets that fail validation or score below 50 are "
+        "rejected before any AI cost is incurred."
+    ),
+    responses={
+        422: {"description": "Structural validation failed - missing or malformed fields"},
+        400: {"description": "Ticket passed structural validation but failed the quality gate (score < 50)"},
+        200: {"description": "Ticket passed both gates and was successfully classified"},
+    },
+)
 async def triage_ticket(ticket: TicketRequestModel):
     # 1. Safely extract merchant_tier string whether it's an Enum or str
     merchant_tier = ticket.merchant_tier

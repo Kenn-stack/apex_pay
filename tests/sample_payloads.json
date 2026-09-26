@@ -1,0 +1,43 @@
+{
+  "scenario_1_malformed": {
+    "description": "Missing merchant_id and invalid email - expect HTTP 422",
+    "payload": {
+      "ticket_id": "TCK-10492",
+      "merchant_tier": "Enterprise",
+      "contact_email": "not-a-valid-email",
+      "timestamp": "2026-09-23T10:15:30Z",
+      "issue_description": "This ticket is missing required fields for testing."
+    },
+    "expected_status": 422
+  },
+  "scenario_2_low_quality": {
+    "description": "Structurally valid but shouting, HTML, no technical breadcrumbs - expect HTTP 400",
+    "payload": {
+      "ticket_id": "TCK-20583",
+      "merchant_id": "mer_live_20583",
+      "merchant_tier": "Starter",
+      "contact_email": "merchant@example.com",
+      "timestamp": "2026-09-23T11:00:00Z",
+      "issue_description": "<script>alert(1)</script> HELP BROKEN FIX IT NOW!!!!!!"
+    },
+    "expected_status": 400,
+    "expected_flags": [
+      "CONTAINS_HTML_OR_MARKUP",
+      "EXCESSIVE_CAPITALIZATION",
+      "REPETITIVE_CHARACTERS",
+      "MISSING_TECHNICAL_IDENTIFIERS"
+    ]
+  },
+  "scenario_3_high_quality": {
+    "description": "Clean, detailed Enterprise ticket with real technical breadcrumbs - expect HTTP 200 with live AI dispatch",
+    "payload": {
+      "ticket_id": "TCK-10492",
+      "merchant_id": "mer_live_99812",
+      "merchant_tier": "Enterprise",
+      "contact_email": "merchant@example.com",
+      "timestamp": "2026-09-23T10:15:30Z",
+      "issue_description": "Enterprise merchant experiencing 504 gateway timeouts on live webhook endpoints during active transaction processing for txn_883912."
+    },
+    "expected_status": 200
+  }
+}
