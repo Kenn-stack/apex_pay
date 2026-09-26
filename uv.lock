@@ -53,6 +53,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "groq" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
 ]
 
@@ -65,6 +66,7 @@ dev = [
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
     { name = "groq", specifier = ">=1.7.0" },
+    { name = "pydantic-settings", specifier = ">=2.15.0" },
     { name = "python-dotenv", specifier = ">=1.2.3" },
 ]
 

@@ -1,16 +1,19 @@
-import os
+#app/services/groq.py
+import asyncio
 import json
+import os
+
+from dotenv import load_dotenv
 from groq import (
-    AsyncGroq,
-    AuthenticationError,
-    RateLimitError,
-    InternalServerError,
     APIConnectionError,
     APIError,
+    AsyncGroq,
+    AuthenticationError,
+    InternalServerError,
+    RateLimitError,
 )
+
 from logger.logging import logger
-from dotenv import load_dotenv
-import asyncio
 
 load_dotenv(override=True)  
 
