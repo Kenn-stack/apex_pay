@@ -34,18 +34,8 @@ async def gen_groq_json(payload):
 
         EXAMPLE INPUT: 
         {
-            "ticket_id": "TCK-10492",
-            "merchant_id": "mer_live_99812",
             "merchant_tier": "Enterprise",
-            "contact_email": "merchant@example.com",
-            "processing_timestamp": "2026-09-23T10:15:30Z",
             "issue_description": "Enterprise merchant experiencing 504 gateway timeouts on live webhook endpoints during active transaction processing.",
-            "data_quality": {
-                "score": 95,
-                "status": "EXCELLENT",
-                "flags": []
-            }
-        }
 
         EXAMPLE JSON OUTPUT:
         {
@@ -98,20 +88,11 @@ async def gen_groq_json(payload):
 
     return json.loads(response.choices[0].message.content)
 
-#     print(json.loads(response.choices[0].message.content))
+    # print(json.loads(response.choices[0].message.content))
 
 # payload =  {
-#             "ticket_id": "TCK-10492",
-#             "merchant_id": "mer_live_99812",
 #             "merchant_tier": "Enterprise",
-#             "contact_email": "merchant@example.com",
-#             "processing_timestamp": "2026-09-23T10:15:30Z",
 #             "issue_description": "Enterprise merchant experiencing 504 gateway timeouts on live webhook endpoints during active transaction processing.",
-#             "data_quality": {
-#                 "score": 95,
-#                 "status": "EXCELLENT",
-#                 "flags": []
-#             }
 #         }
 
 # asyncio.run(gen_groq_json(payload))
